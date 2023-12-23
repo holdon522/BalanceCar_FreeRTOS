@@ -30,8 +30,7 @@ mycar\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 mycar\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 mycar\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 mycar\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
-mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 mycar\main.o: ../Core/Inc/FreeRTOSConfig.h
 mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
@@ -39,6 +38,12 @@ mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3/portmacro.h
 mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+mycar\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 mycar\main.o: ../Core/Inc/adc.h
 mycar\main.o: ../Core/Inc/dma.h
 mycar\main.o: ../Core/Inc/tim.h

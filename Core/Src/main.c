@@ -20,6 +20,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "adc.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -104,6 +105,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_TIM1_Init();
@@ -113,14 +115,13 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
-	HAL_UART_Receive_DMA(&huart2,vp_rxbuff,VALUEPACK_BUFFER_SIZE);
+	HAL_UART_Receive_DMA(&huart2, (uint8_t *)vp_rxbuff, VALUEPACK_BUFFER_SIZE);
 	HAL_Delay(1000);
-	tx.integers[0]=100;
 	delay_init(72);
+	uint8_t Senbuff[] = "\r\n**** Serial Output Message by DMA ***\r\n   UART DMA Test \r\n  ";
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+  /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
   /* Start scheduler */
   osKernelStart();

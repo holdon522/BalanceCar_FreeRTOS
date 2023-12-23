@@ -17,9 +17,11 @@ int  Balance_Pwm=0,Velocity_Pwm=0,Turn_Pwm=0;        //PID计算的PWM值
 int  Motor1=0, Motor2=0;                  //左右电机PWM值
 int  Encoder_left=0, Encoder_right=0;     //检测速度
 float Movement = 0;                  //速度调节  
-int  Contrl_Turn = 84;                //转向调节变量
+int  Contrl_Turn = 64;                //转向调节变量
 struct tCCD  CCD;                      //摄像头的数据
 uint8_t   power;                       //定义电池电量
+float Speed=0;  
+
 #define imu_report 0	//imu上位机上报
 /*************************************************************************************************************
 *函数名:Task_200HZ()

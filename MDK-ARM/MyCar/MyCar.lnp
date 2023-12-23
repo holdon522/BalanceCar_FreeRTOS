@@ -41,7 +41,7 @@
 "mycar\stream_buffer.o"
 "mycar\tasks.o"
 "mycar\timers.o"
-"mycar\cmsis_os2.o"
+"mycar\cmsis_os.o"
 "mycar\heap_4.o"
 "mycar\port.o"
 "mycar\inv_mpu.o"

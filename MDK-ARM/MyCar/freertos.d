@@ -39,8 +39,11 @@ mycar\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 mycar\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 mycar\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 mycar\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
-mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
+mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
+mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+mycar\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 mycar\freertos.o: F:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
 mycar\freertos.o: ..\Device\oled\oled.h
 mycar\freertos.o: ..\..\MPU6050\mpu6050.h

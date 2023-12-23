@@ -9,7 +9,7 @@
 #include "valuepack.h"
 #include "dma.h"
 #include "usart.h"
-
+#include "cartask.h"
 
 //DMA下进行的数据传输
 
@@ -28,7 +28,8 @@ long rdIndex = 0;
 //发送和接收缓冲区
 unsigned char vp_rxbuff[VALUEPACK_BUFFER_SIZE];
 unsigned char vp_txbuff[TXPACK_BYTE_SIZE + 3];
-
+extern RxPack rx;
+extern TxPack tx;
 //extern UART_HandleTypeDef huart2;
 //extern DMA_HandleTypeDef hdma_usart2_rx;
 //extern DMA_HandleTypeDef hdma_usart2_tx;
@@ -43,11 +44,53 @@ unsigned int err = 0;
 unsigned char sum = 0;
 unsigned char isok;
 
+void connect_read_data(void)
+{
+
+		if(readValuePack(&rx))
+		{		
+				Speed=rx.shorts[2];
+				short move=rx.shorts[0];
+				short turn=rx.shorts[1];
+				switch(move)
+				{
+					case 0:
+						Movement=0;
+						break;
+					case 1:
+						Movement=Speed;
+						break;
+					case -1:
+						Movement=-Speed;
+						break;
+					break;
+				}
+				switch(turn)
+				{
+					case 0:
+						Contrl_Turn=64;
+						break;
+					case 1:
+						Contrl_Turn=90;
+						break;
+					case -1:
+						Contrl_Turn=34;
+						break;
+					break;
+				}
+		}
+//		sendValuePack(&tx);
+		
+		printf("rx1:%d,rx2:%d,rx3:%d,rx4:%d\r\n",rx.shorts[0],rx.shorts[1],rx.shorts[2],rx.shorts[3]);
+}
+
+
 //接收数据包解析
 unsigned char readValuePack(RxPack *rx_pack_ptr)
 {
 	isok = 0;
-	this_index = VALUEPACK_BUFFER_SIZE - DMA1_Channel6->CNDTR;
+//	this_index = VALUEPACK_BUFFER_SIZE - DMA1_Channel6->CNDTR;
+	this_index = VALUEPACK_BUFFER_SIZE - (__HAL_DMA_GET_COUNTER(&hdma_usart2_rx));
 	if (this_index < last_index)
 		rxIndex += VALUEPACK_BUFFER_SIZE + this_index - last_index;
 	else

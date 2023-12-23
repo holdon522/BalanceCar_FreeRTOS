@@ -10,6 +10,7 @@ extern int  Contrl_Turn ;                     //转向调节变量
 extern int  Distence ;                       //小车和前方障碍物之间的距离
 extern uint8_t   power;                       //定义电池电量
 extern int  Distance;
+extern float Speed ;  
 struct mpu6050_data{
 	
 		short acc_x;

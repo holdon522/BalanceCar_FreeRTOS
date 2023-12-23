@@ -54,46 +54,39 @@
 extern unsigned char vp_rxbuff[VALUEPACK_BUFFER_SIZE];
 extern unsigned char vp_txbuff[TXPACK_BYTE_SIZE + 3];
 /* USER CODE END Variables */
-/* Definitions for Task_Sys */
-osThreadId_t Task_SysHandle;
-const osThreadAttr_t Task_Sys_attributes = {
-  .name = "Task_Sys",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
-/* Definitions for Task_Control */
-osThreadId_t Task_ControlHandle;
-const osThreadAttr_t Task_Control_attributes = {
-  .name = "Task_Control",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for Task_IMU */
-osThreadId_t Task_IMUHandle;
-const osThreadAttr_t Task_IMU_attributes = {
-  .name = "Task_IMU",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
-/* Definitions for Task_Speed */
-osThreadId_t Task_SpeedHandle;
-const osThreadAttr_t Task_Speed_attributes = {
-  .name = "Task_Speed",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
+osThreadId Task_SysHandle;
+osThreadId Task_ControlHandle;
+osThreadId Task_IMUHandle;
+osThreadId Task_ConnectHandle;
+osSemaphoreId myBinarySem_rxokHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void StartTask_5Hz(void *argument);
-void StartTask_100Hz(void *argument);
-void StartTask_200Hz(void *argument);
-void StartTask04(void *argument);
+void StartTask_5Hz(void const * argument);
+void StartTask_100Hz(void const * argument);
+void StartTask_200Hz(void const * argument);
+void StartTask_Connect(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/* GetIdleTaskMemory prototype (linked to static allocation support) */
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+
+/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
+static StaticTask_t xIdleTaskTCBBuffer;
+static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
+
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
+{
+  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
+  *ppxIdleTaskStackBuffer = &xIdleStack[0];
+  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+  /* place for user code */
+}
+/* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /**
   * @brief  FreeRTOS initialization
@@ -109,6 +102,11 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
+  /* Create the semaphores(s) */
+  /* definition and creation of myBinarySem_rxok */
+  osSemaphoreDef(myBinarySem_rxok);
+  myBinarySem_rxokHandle = osSemaphoreCreate(osSemaphore(myBinarySem_rxok), 1);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -122,26 +120,26 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of Task_Sys */
-  Task_SysHandle = osThreadNew(StartTask_5Hz, NULL, &Task_Sys_attributes);
+  /* definition and creation of Task_Sys */
+  osThreadDef(Task_Sys, StartTask_5Hz, osPriorityLow, 0, 128);
+  Task_SysHandle = osThreadCreate(osThread(Task_Sys), NULL);
 
-  /* creation of Task_Control */
-  Task_ControlHandle = osThreadNew(StartTask_100Hz, NULL, &Task_Control_attributes);
+  /* definition and creation of Task_Control */
+  osThreadDef(Task_Control, StartTask_100Hz, osPriorityNormal, 0, 128);
+  Task_ControlHandle = osThreadCreate(osThread(Task_Control), NULL);
 
-  /* creation of Task_IMU */
-  Task_IMUHandle = osThreadNew(StartTask_200Hz, NULL, &Task_IMU_attributes);
+  /* definition and creation of Task_IMU */
+  osThreadDef(Task_IMU, StartTask_200Hz, osPriorityBelowNormal, 0, 128);
+  Task_IMUHandle = osThreadCreate(osThread(Task_IMU), NULL);
 
-  /* creation of Task_Speed */
-  Task_SpeedHandle = osThreadNew(StartTask04, NULL, &Task_Speed_attributes);
+  /* definition and creation of Task_Connect */
+  osThreadDef(Task_Connect, StartTask_Connect, osPriorityLow, 0, 128);
+  Task_ConnectHandle = osThreadCreate(osThread(Task_Connect), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
 	vTaskSuspend(Task_ControlHandle);
   /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
 
 }
 
@@ -152,7 +150,7 @@ void MX_FREERTOS_Init(void) {
   * @retval None
   */
 /* USER CODE END Header_StartTask_5Hz */
-void StartTask_5Hz(void *argument)
+void StartTask_5Hz(void const * argument)
 {
   /* USER CODE BEGIN StartTask_5Hz */
 	OLED_Init();
@@ -172,7 +170,7 @@ void StartTask_5Hz(void *argument)
 * @retval None
 */
 /* USER CODE END Header_StartTask_100Hz */
-void StartTask_100Hz(void *argument)
+void StartTask_100Hz(void const * argument)
 {
   /* USER CODE BEGIN StartTask_100Hz */
   /* Infinite loop */
@@ -191,7 +189,7 @@ void StartTask_100Hz(void *argument)
 * @retval None
 */
 /* USER CODE END Header_StartTask_200Hz */
-void StartTask_200Hz(void *argument)
+void StartTask_200Hz(void const * argument)
 {
   /* USER CODE BEGIN StartTask_200Hz */
 	uint8_t ret;
@@ -215,41 +213,25 @@ void StartTask_200Hz(void *argument)
   /* USER CODE END StartTask_200Hz */
 }
 
-/* USER CODE BEGIN Header_StartTask04 */
+/* USER CODE BEGIN Header_StartTask_Connect */
 /**
-* @brief Function implementing the Task_Speed thread.
+* @brief Function implementing the Task_Connect thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartTask04 */
-void StartTask04(void *argument)
+/* USER CODE END Header_StartTask_Connect */
+void StartTask_Connect(void const * argument)
 {
-  /* USER CODE BEGIN StartTask04 */
-	RxPack rx;
-	TxPack tx;
-	uint8_t Senbuff[] = "\r\n**** Serial Output Message by DMA ***\r\n   UART DMA Test \r\n  ";
+  /* USER CODE BEGIN StartTask_Connect */
+
   /* Infinite loop */
   for(;;)
   {
-//		HC05_Start();
-
-//		if(readValuePack(&rx))
-//		{
-//			// 在此读取手机传来的数据			
-//			// 这里是将接收的数据原样回传
-//			tx.bools[0] = rx.bools[0];
-
-//			tx.integers[0] = rx.integers[0];
-//			tx.floats[0] = rx.floats[0];	
-//			// 你也可以把 sendValuePack放在这，这样就只有当接收到手机传来的数据包后才回传数据	
-//		}
-//				readValuePack(&rx);
-//		sendValuePack(&tx);
-		HAL_UART_Transmit_DMA(&huart1, (uint8_t *)Senbuff, sizeof(Senbuff));
-//		printf("rxbuf:%d\r\n,",vp_rxbuff[0]);
+//		osSemaphoreWait (myBinarySem_rxokHandle,osWaitForever);//等待二值信号量，只有等到了才会往下运行
+		connect_read_data();
     osDelay(100);
   }
-  /* USER CODE END StartTask04 */
+  /* USER CODE END StartTask_Connect */
 }
 
 /* Private application code --------------------------------------------------*/

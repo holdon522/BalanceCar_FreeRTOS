@@ -21,20 +21,20 @@
 // 2.指定发送到手机的数据包的结构----------在发送时会自动额外在前后加上包头，包尾和校验和数据，因此会多出3个字节
 // 根据实际需要的变量，定义数据包中 bool byte short int float 五种类型的数目
 
-#define TX_BOOL_NUM 1
+#define TX_BOOL_NUM 0
 #define TX_BYTE_NUM 0
 #define TX_SHORT_NUM 0
-#define TX_INT_NUM 1
-#define TX_FLOAT_NUM 1
+#define TX_INT_NUM 0
+#define TX_FLOAT_NUM 0
 
 // 3.指定接收数据包的结构-----------------------------------------------------------------------------------
 // 根据实际需要的变量，定义数据包中 bool byte short int float 五种类型的数目
 
-#define RX_BOOL_NUM 1
+#define RX_BOOL_NUM 0
 #define RX_BYTE_NUM 0
-#define RX_SHORT_NUM 0
-#define RX_INT_NUM 1
-#define RX_FLOAT_NUM 1
+#define RX_SHORT_NUM 4
+#define RX_INT_NUM 0
+#define RX_FLOAT_NUM 0
 
 
 extern const unsigned int VALUEPACK_INDEX_RANGE;
@@ -96,7 +96,8 @@ typedef struct
 // 初始化 valuepack 包括一些必要的硬件外设配置
 
 //void initValuePack(int baudrate);
-
+char VerifyData(uint8_t *data, uint8_t dataBIT);
+void connect_read_data(void);
 // 需要保证至少每秒执行10次该函数
 // 该函数的主要过程是先解析接收的缓冲区，如果接收到完整的RX数据包，则解析RX数据包中的数据，然后开始串口发送TX数据包 。
 // 接收到数据包时 返回 1 ，否则返回 0

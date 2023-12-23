@@ -33,3 +33,4 @@ mycar\valuepack.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 mycar\valuepack.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 mycar\valuepack.o: ../Core/Inc/dma.h
 mycar\valuepack.o: ../Core/Inc/usart.h
+mycar\valuepack.o: ..\Device\cartask\cartask.h
