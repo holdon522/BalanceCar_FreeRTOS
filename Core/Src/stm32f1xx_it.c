@@ -312,10 +312,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			
 			HAL_TIM_Base_Stop_IT(&htim1);     //关闭定时器，计时完毕
 			
-		  time  = (time_cnt*1000 + TIM1->CNT) /2 ;   //统计声音单次传播的时间
-			
-			Distance = 34000 * time /1000000;		//计算距离
-			
+//		  time  = (time_cnt*1000 + TIM1->CNT) /2 ;   //统计声音单次传播的时间
+//			Distance = 34000 * time /1000000;		//计算距离
+			if(TIM1->CNT>5000)	TIM1->CNT=0;
+			else Distance=TIM1->CNT*1.7;
 			//过滤掉可能出现0这种错误情况
 			if(Distance == 0)   Distance = last_distance;
 			else                last_distance = Distance;      

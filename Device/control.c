@@ -3,13 +3,12 @@
 #include "main.h"
 #include "control.h"
 #include "stdio.h"
- 
+#include "cartask.h"
 
 #define Mechanical_balance 0.1
 
 int   Dead_Zone=1;     //电机死区
-int   control_turn=64;                             //转向控制
-
+int   control_turn=0;                             //转向控制
 
 //PID调节参数
 struct pid_arg PID = {
@@ -97,11 +96,11 @@ int Vertical_speed_PI(int encoder_left,int encoder_right,float Angle,float Movem
 *形参:无  CCD小于64左转、CCD大于64右转。 yaw = z轴陀螺仪数值
 *返回值:无
 ***************************************************************************************************************/
-int Vertical_turn_PD(u8 CCD,short yaw)
+int Vertical_turn_PD(short CCD,short yaw)
 {
 		float Turn;     
     float Bias;	  
-	  Bias=CCD-64;
+	  Bias=CCD;
 	  Turn=-Bias*PID.Turn_Kp-yaw*PID.Turn_Kd;
 	  return Turn;
 }

@@ -35,3 +35,4 @@ mycar\control.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 mycar\control.o: ..\Device\control.h
 mycar\control.o: ..\Device\sys.h
 mycar\control.o: F:\Keil\ARM\ARMCC\Bin\..\include\stdio.h
+mycar\control.o: ..\Device\cartask\cartask.h

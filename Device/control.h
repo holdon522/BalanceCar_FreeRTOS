@@ -20,7 +20,6 @@
 
 
 extern int Flag_Stop;
-extern volatile int Encoder_Left,Encoder_Right;		      //±‡¬Î∆˜◊Û”“ÀŸ∂»÷µ
 struct pid_arg{
 	
 	float Balance_Kp;
@@ -41,7 +40,7 @@ extern struct pid_arg PID;
 int Read_Encoder(u8 TIMX);
 int	Vertical_Ring_PD(float Angle,float Gyro);
 int Vertical_speed_PI(int encoder_left,int encoder_right,float Angle,float Movement );
-int Vertical_turn_PD(u8 CCD,short yaw);
+int Vertical_turn_PD(short CCD,short yaw);
 void Set_Motor(int motor1,int motor2);
 void PWM_Limiting(int *motor1,int *motor2);
 u8 Turn_off(const float Angle);

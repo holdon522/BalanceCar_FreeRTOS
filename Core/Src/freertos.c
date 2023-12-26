@@ -229,7 +229,7 @@ void StartTask_Connect(void const * argument)
   {
 //		osSemaphoreWait (myBinarySem_rxokHandle,osWaitForever);//等待二值信号量，只有等到了才会往下运行
 		connect_read_data();
-    osDelay(100);
+    osDelay(10);
   }
   /* USER CODE END StartTask_Connect */
 }

@@ -11,13 +11,14 @@
 #include "stdio.h"
 #include "usart.h"
 #include "control.h"
+#include "cartask.h"
 struct mpu6050_data OutMpu; 
 int  FS_MODE = 0 ;                      //0、遥控模式   1、蔽障模式  2、巡线模式 
 int  Balance_Pwm=0,Velocity_Pwm=0,Turn_Pwm=0;        //PID计算的PWM值
 int  Motor1=0, Motor2=0;                  //左右电机PWM值
 int  Encoder_left=0, Encoder_right=0;     //检测速度
 float Movement = 0;                  //速度调节  
-int  Contrl_Turn = 64;                //转向调节变量
+int  Contrl_Turn = 0;                //转向调节变量
 struct tCCD  CCD;                      //摄像头的数据
 uint8_t   power;                       //定义电池电量
 float Speed=0;  
@@ -165,7 +166,7 @@ void Car_Task_IMU(void)
 
 void Car_Task_Motor(void)
 {
-
+		HC05_Start();
 		Encoder_left  = -Read_Encoder(1);
 		Encoder_right = Read_Encoder(2);
 //		printf("Encoder_left:%d,Encoder_right:%d\r\n",Encoder_left,Encoder_right);
@@ -224,7 +225,7 @@ void Car_Task_System(void)
 void  HC05_Start(void)
 {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
-	delay_us(25);
+	delay_us(20);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 	
 }

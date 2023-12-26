@@ -63,23 +63,27 @@ void connect_read_data(void)
 					case -1:
 						Movement=-Speed;
 						break;
-					break;
+					default:
+						break;
 				}
 				switch(turn)
 				{
 					case 0:
-						Contrl_Turn=64;
+						Contrl_Turn=0;
 						break;
 					case 1:
-						Contrl_Turn=90;
+						Contrl_Turn=rx.shorts[3];
 						break;
 					case -1:
-						Contrl_Turn=34;
+						Contrl_Turn=-rx.shorts[3];
 						break;
-					break;
+					default:
+						break;
 				}
+				
 		}
-//		sendValuePack(&tx);
+		sendValuePack(&tx);
+		
 		
 		printf("rx1:%d,rx2:%d,rx3:%d,rx4:%d\r\n",rx.shorts[0],rx.shorts[1],rx.shorts[2],rx.shorts[3]);
 }
