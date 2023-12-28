@@ -92,6 +92,14 @@ void Task_State(void)
 int  Distance=0 ; 
 void OLED_Show(void)
 {
+		OLED_ShowString(1,1,"Mode:");
+		if(FS_MODE==REMOTE_MODE){
+			OLED_ShowString(1,6,"REMOTE");
+		}else if(FS_MODE==ULTRA_AVOID_MODE){
+			OLED_ShowString(1,6,"AUTO  ");
+		}else{
+			OLED_ShowString(1,6,"FOLLOW ");
+		}
 //		uint8_t power=Get_battery_volt();
 		OLED_ShowString(2,1,"distance:");
 			OLED_ShowNum(2,10,Distance,3);
@@ -116,10 +124,10 @@ void OLED_Show(void)
 		OLED_ShowNum(4,6,OutMpu.gyro_y,2);
 		OLED_ShowNum(4,12,OutMpu.gyro_z,2);
 		
-		OLED_ShowString(1,1,"l:");
-		OLED_ShowString(1,8,"r:");
-		OLED_ShowNum(1,4,abs(Encoder_left),4);
-		OLED_ShowNum(1,11,abs(Encoder_right),4);
+//		OLED_ShowString(1,1,"l:");
+//		OLED_ShowString(1,8,"r:");
+//		OLED_ShowNum(1,4,abs(Encoder_left),4);
+//		OLED_ShowNum(1,11,abs(Encoder_right),4);
 		
 //		OLED_ShowNum(2,1,Motor1,4);
 //		OLED_ShowNum(2,10,Motor2,4);

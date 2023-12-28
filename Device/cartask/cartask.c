@@ -22,6 +22,8 @@ int  Contrl_Turn = 0;                //转向调节变量
 struct tCCD  CCD;                      //摄像头的数据
 uint8_t   power;                       //定义电池电量
 float Speed=0;  
+uint8_t Flag_Stop=0;
+uint8_t Bizhang_Flag=0;
 
 #define imu_report 0	//imu上位机上报
 /*************************************************************************************************************
@@ -166,10 +168,11 @@ void Car_Task_IMU(void)
 
 void Car_Task_Motor(void)
 {
+		static u16 count=0;
 		HC05_Start();
 		Encoder_left  = -Read_Encoder(1);
 		Encoder_right = Read_Encoder(2);
-//		printf("Encoder_left:%d,Encoder_right:%d\r\n",Encoder_left,Encoder_right);
+		printf("Encoder_left:%d,Encoder_right:%d\r\n",Encoder_left,Encoder_right);
 		//1、确定直立环PWM
 	
 //		printf("pitch:%f\r\n",OutMpu.pitch);
@@ -177,21 +180,51 @@ void Car_Task_Motor(void)
 		Balance_Pwm = Vertical_Ring_PD(OutMpu.pitch, OutMpu.gyro_y);
 
 	//2、确定速度环PWM
-	
-	  Velocity_Pwm = Vertical_speed_PI(Encoder_left,Encoder_right,OutMpu.pitch, Movement );
+		 if(FS_MODE == REMOTE_MODE)       //遥控模式
+		 {
+				Movement=Speed;
+			 
+		 }else if(FS_MODE == ULTRA_FOLLOW_MODE)	//跟随模式
+		 {
+				if(Distance<12&&Distance>2){
+					Movement=-50;
+				}else{
+					Movement=50;
+				}
+		 }else if(FS_MODE == ULTRA_AVOID_MODE){		//避障模式
+					if(Distance<15)	Bizhang_Flag=1;
+					else Movement=30;
+					if(Bizhang_Flag==1){
+						if(++count<50){
+						Movement=-30;
+						}else{
+							Movement=0;
+							count=0;
+							Bizhang_Flag=2;
+						}
+					}
+		 }
+		Velocity_Pwm = Vertical_speed_PI(Encoder_left,Encoder_right,OutMpu.pitch, Movement );
 	
 	
 	//3、确定转向环PWM
 	
-//	  if(FS_MODE == 0)       //遥控模式
+	  if(FS_MODE == REMOTE_MODE)       //遥控模式
 			Turn_Pwm = Vertical_turn_PD(Contrl_Turn, OutMpu.gyro_z);
-//		else if(FS_MODE == 1)  //蔽障模式
-//		{
-//			if(Distance < 20)
-//					Turn_Pwm = Vertical_turn_PD(20, OutMpu.gyro_z);
-//			else
-//				 Turn_Pwm = 0;
-//		}
+		 if(FS_MODE == ULTRA_AVOID_MODE)  //避障模式
+		{
+			if(Bizhang_Flag==2){
+					if(++count<60){
+					Turn_Pwm = Vertical_turn_PD(18, OutMpu.gyro_z);
+					}
+					else{
+					 count=0;
+						Bizhang_Flag=0;
+					}
+			}else{
+					Turn_Pwm = Vertical_turn_PD(0, OutMpu.gyro_z);
+			}
+		}
 //		else if(FS_MODE == 2)  //巡线模式
 //		{
 //			   Turn_Pwm = Vertical_turn_PD(CCD.middle, OutMpu.gyro_z);
@@ -200,10 +233,13 @@ void Car_Task_Motor(void)
 	//4、确定最终左右电机的PWM
 		Motor1 = Balance_Pwm + Velocity_Pwm + Turn_Pwm;
 	  Motor2 = Balance_Pwm + Velocity_Pwm - Turn_Pwm;
-//		Motor1 = Balance_Pwm;
-//		Motor2 = Balance_Pwm;
-		PWM_Limiting(&Motor1,&Motor2);
 
+		PWM_Limiting(&Motor1,&Motor2);
+		
+		if(Pick_Up(OutMpu.acc_z,OutMpu.pitch,Encoder_left,Encoder_right))//===检查是否小车被那起
+		Flag_Stop=1;	                                                      //===如果被拿起就关闭电机
+		if(Put_Down(OutMpu.pitch,Encoder_left,Encoder_right))              //===检查是否小车被放下
+		Flag_Stop=0;	                            
 		if(Turn_off(OutMpu.pitch)==0){
 	//输出PWM控制电机
 			Set_PWM(Motor1,Motor2);
@@ -229,3 +265,5 @@ void  HC05_Start(void)
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 	
 }
+
+

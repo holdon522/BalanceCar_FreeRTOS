@@ -10,7 +10,13 @@ extern int  Contrl_Turn ;                     //转向调节变量
 extern int  Distence ;                       //小车和前方障碍物之间的距离
 extern uint8_t   power;                       //定义电池电量
 extern int  Distance;
-extern float Speed ;  
+extern float Speed ; 
+extern uint8_t Flag_Stop;
+
+#define REMOTE_MODE 0				//蓝牙遥控模式
+#define ULTRA_AVOID_MODE 1	//超声波避障模式
+#define ULTRA_FOLLOW_MODE 2	//超声波跟随模式
+
 struct mpu6050_data{
 	
 		short acc_x;

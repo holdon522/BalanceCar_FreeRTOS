@@ -24,7 +24,7 @@
 #define TX_BOOL_NUM 0
 #define TX_BYTE_NUM 0
 #define TX_SHORT_NUM 0
-#define TX_INT_NUM 0
+#define TX_INT_NUM 2
 #define TX_FLOAT_NUM 0
 
 // 3.指定接收数据包的结构-----------------------------------------------------------------------------------
@@ -32,7 +32,7 @@
 
 #define RX_BOOL_NUM 0
 #define RX_BYTE_NUM 0
-#define RX_SHORT_NUM 4
+#define RX_SHORT_NUM 5
 #define RX_INT_NUM 0
 #define RX_FLOAT_NUM 0
 

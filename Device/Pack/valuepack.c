@@ -55,13 +55,16 @@ void connect_read_data(void)
 				switch(move)
 				{
 					case 0:
-						Movement=0;
+						Speed=0;
 						break;
 					case 1:
-						Movement=Speed;
+						if(Distance>20)
+							Speed=rx.shorts[2];
+						else
+							Speed=0;
 						break;
 					case -1:
-						Movement=-Speed;
+						Speed=-rx.shorts[2];
 						break;
 					default:
 						break;
@@ -80,12 +83,14 @@ void connect_read_data(void)
 					default:
 						break;
 				}
-				
+				FS_MODE=rx.shorts[4];
 		}
+		tx.integers[0]=Speed;
+		tx.integers[1]=Distance;
 		sendValuePack(&tx);
 		
 		
-		printf("rx1:%d,rx2:%d,rx3:%d,rx4:%d\r\n",rx.shorts[0],rx.shorts[1],rx.shorts[2],rx.shorts[3]);
+//		printf("rx1:%d,rx2:%d,rx3:%d,rx4:%d\r\n",rx.shorts[0],rx.shorts[1],rx.shorts[2],rx.shorts[3]);
 }
 
 

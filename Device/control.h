@@ -6,7 +6,7 @@
 
 
 //»úÐµ0µã
-#define Mechanical_balance 0
+#define Mechanical_balance 0.1
 
 
 #define AIN1(PinState)    HAL_GPIO_WritePin( GPIOB, GPIO_PIN_14, (GPIO_PinState)PinState)
@@ -19,7 +19,7 @@
 #define PWMB   TIM2->CCR4
 
 
-extern int Flag_Stop;
+
 struct pid_arg{
 	
 	float Balance_Kp;
@@ -41,6 +41,8 @@ int Read_Encoder(u8 TIMX);
 int	Vertical_Ring_PD(float Angle,float Gyro);
 int Vertical_speed_PI(int encoder_left,int encoder_right,float Angle,float Movement );
 int Vertical_turn_PD(short CCD,short yaw);
+int Pick_Up(float Acceleration,float Angle,int encoder_left,int encoder_right);
+int Put_Down(float Angle,int encoder_left,int encoder_right);
 void Set_Motor(int motor1,int motor2);
 void PWM_Limiting(int *motor1,int *motor2);
 u8 Turn_off(const float Angle);
